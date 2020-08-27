@@ -1,6 +1,7 @@
 const express = require('express');
+const db = require('../db')
 const router = express.Router();
-const Book = require('../models').Book;
+const {Book} = db.models;
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb){
@@ -13,10 +14,17 @@ function asyncHandler(cb){
   }
 }
 
-/* GET articles listing. */
-router.get('/', asyncHandler(async (req, res) => {
-  const books = await Book.findAll();
-  res.render('books/index', {books: books})
-}));
+/* GET library listing. */
+router.get("/", asyncHandler(async (req, res) => {
+    res.redirect("/books");
+  })
+);
+
+//GET books listing
+router.get("/books", asyncHandler(async (req, res) => {
+    const books = await Book.findAll();
+    res.render("index", {books: books});
+  })
+);
 
 module.exports = router;
