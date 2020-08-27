@@ -1,5 +1,4 @@
-extends ../layout
 
-block content
     div.subheader
-    h1 Work
+    each book in books
+        h2= book.title

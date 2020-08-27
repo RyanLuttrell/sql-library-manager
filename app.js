@@ -35,5 +35,4 @@ app.use(express.static("stylesheet"));
 app.use(routes)
 app.set('view engine', 'pug')
 
-app.use(router)
 app.listen(3000)
