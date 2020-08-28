@@ -28,20 +28,23 @@ router.get("/books", asyncHandler(async (req, res) => {
 );
 
 //Render the form so that a user can add a new book to the library
-router.get("/books/new-book", asyncHandler(async (req, res) => {
+router.get("/books/new", asyncHandler(async (req, res) => {
   res.render("new-book", {book: {}, title: "New Book"})
 }));
 
 //Post the new book to the database
-router.post('/books', asyncHandler(async (req, res) => {
+router.post('/books/new', asyncHandler(async (req, res) => {
   let book;
   try {
     book = await Book.create(req.body);
     res.redirect('/books/' + book.id)
+    console.log(req.body)
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       book = await Book.build(req.body);
-      res.render('new-book', {book, errors: error.errors, title: 'New Article'})
+      res.render('new-book', {book, errors: error.errors, title: 'New Book'})
+    } else {
+      throw error;
     }
   }
 }));
@@ -55,5 +58,28 @@ router.get('/books/:id', asyncHandler(async (req, res) => {
     res.sendStatus(404)
   }
 }));
+
+//Post the updates from the form to the database to allow the user to update the details of a book
+router.post('/books/:id/edit', asyncHandler(async (req, res) => {
+  let book;
+  try {
+    book = await Book.findByPk(req.params.id);
+    if (book) {
+      await book.update(req.body);
+      console.log(req.body)
+      res.redirect('/books/' + book.id)
+    } else {
+      res.sendStatus(404)
+    }
+  } catch (error) {;
+    if (error.name === 'SequelizeValidationError') {
+      book = await Book.build(req.body)
+      book.id = req.params.id;
+      res.render('update-book', {book, errors: error.errors} )
+    } else {
+      throw error;
+    }
+  }
+}))
 
 module.exports = router;

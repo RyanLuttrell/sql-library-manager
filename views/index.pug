@@ -3,7 +3,7 @@ extends layout
 block content
   h1=title
   p
-    a.button(href='/books/new-book') Create New Book
+    a.button(href='/books/new') Create New Book
   table
     thead
       tr
@@ -12,11 +12,11 @@ block content
         th Genre
         th Year
     tbody
-      tr
       each book in books
-        td
-          a(href = "/books/" + book.id)= book.title
-        td= book.author
-        td= book.genre
-        td= book.year
+        tr
+          td
+            a(href = "/books/" + book.id)= book.title
+          td= book.author
+          td= book.genre
+          td= book.year
 
