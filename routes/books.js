@@ -33,18 +33,17 @@ router.get("/books/new", asyncHandler(async (req, res) => {
 }));
 
 //Post the new book to the database
-router.post('/books/new', asyncHandler(async (req, res) => {
+router.post('/books/new', asyncHandler(async (req, res, next) => {
   let book;
   try {
     book = await Book.create(req.body);
-    res.redirect('/books/' + book.id)
-    console.log(req.body)
+    res.redirect('/books');
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       book = await Book.build(req.body);
       res.render('new-book', {book, errors: error.errors, title: 'New Book'})
     } else {
-      throw error;
+      next(err)
     }
   }
 }));
