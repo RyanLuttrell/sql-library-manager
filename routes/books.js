@@ -14,17 +14,46 @@ function asyncHandler(cb){
   }
 }
 
-/* GET library listing. */
+//Redirect so that the user automatically goes to the full listing of books
 router.get("/", asyncHandler(async (req, res) => {
     res.redirect("/books");
   })
 );
 
-//GET books listing
+//Get full list of books
 router.get("/books", asyncHandler(async (req, res) => {
     const books = await Book.findAll();
-    res.render("index", {books: books});
+    res.render("index", {books: books, title: 'All Books'});
   })
 );
+
+//Render the form so that a user can add a new book to the library
+router.get("/books/new-book", asyncHandler(async (req, res) => {
+  res.render("new-book", {book: {}, title: "New Book"})
+}));
+
+//Post the new book to the database
+router.post('/books', asyncHandler(async (req, res) => {
+  let book;
+  try {
+    book = await Book.create(req.body);
+    res.redirect('/books/' + book.id)
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      book = await Book.build(req.body);
+      res.render('new-book', {book, errors: error.errors, title: 'New Article'})
+    }
+  }
+}));
+
+//Shows the form that has the details of the book as well as the ability to update the information in the database
+router.get('/books/:id', asyncHandler(async (req, res) => {
+  const book = await Book.findByPk(req.params.id);
+  if (book) {
+    res.render('update-book', {book: book, title: book.title})
+  } else {
+    res.sendStatus(404)
+  }
+}));
 
 module.exports = router;
