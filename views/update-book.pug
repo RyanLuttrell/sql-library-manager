@@ -2,9 +2,9 @@ extends layout
 
 block content
 
-  h1=title
+  h1 Update Book
 
-  include error
+  include page-error
 
   form(action='/books/' + book.id, method='post')
     p

@@ -8,8 +8,11 @@ function asyncHandler(cb){
   return async(req, res, next) => {
     try {
       await cb(req, res, next)
-    } catch(error){
-      res.status(500).send(error);
+    } catch(err){
+      err = new Error()
+      err.status = 500;
+      err.message = "Oh No! The book you are looking for does not exist"
+      next(err)
     }
   }
 }
@@ -54,7 +57,7 @@ router.get('/books/:id', asyncHandler(async (req, res) => {
   if (book) {
     res.render('update-book', {book: book, title: book.title})
   } else {
-    res.sendStatus(404)
+    next(err)
   }
 }));
 
@@ -75,7 +78,7 @@ router.post('/books/:id', asyncHandler(async (req, res) => {
       book.id = req.params.id;
       res.render('update-book', {book, errors: error.errors} )
     } else {
-      throw error;
+      next(err)
     }
   }
 }))
@@ -86,7 +89,7 @@ router.post('/books/:id/delete', asyncHandler(async (req ,res) => {
   if (book) {
     res.redirect("/books");
   } else {
-    res.sendStatus(404)
+    next(err)
   }
 }));
 
