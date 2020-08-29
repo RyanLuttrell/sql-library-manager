@@ -52,29 +52,34 @@ h2 {
   padding-top: 20px;
 }
 
-th {
-  border-bottom: 2px solid #D8B493;
+
+table thead tr {
+  height: 60px;
+  background: #019875;
+}
+table tbody tr {
+  height: 50px;
+}
+table td, table th {
   text-align: left;
-  padding: 5px 20px 5px 10px;
 }
 
-tr {
-  min-height: 50px;
-}
-
-tr:nth-child(2n) {
-  background: #E7E7E7;
-}
-
-td {
-  padding: 5px 20px 5px 10px;
-}
 
 label {
   font-weight: bold;
   min-width: 130px;
   display: inline-block;
   transition: 0.4s;
+}
+
+table {
+  border-spacing: 1;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
 }
 
 input {

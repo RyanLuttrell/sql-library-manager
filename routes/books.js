@@ -23,13 +23,13 @@ router.get("/", asyncHandler(async (req, res) => {
 //Get full list of books
 router.get("/books", asyncHandler(async (req, res) => {
     const books = await Book.findAll();
-    res.render("index", {books: books, title: 'All Books'});
+    res.render("index", {books: books, title: 'My Library Application'});
   })
 );
 
 //Render the form so that a user can add a new book to the library
 router.get("/books/new", asyncHandler(async (req, res) => {
-  res.render("new-book", {book: {}, title: "New Book"})
+  res.render("new-book", {book: {}, title: "Create A New Book"})
 }));
 
 //Post the new book to the database
@@ -59,13 +59,12 @@ router.get('/books/:id', asyncHandler(async (req, res) => {
 }));
 
 //Post the updates from the form to the database to allow the user to update the details of a book
-router.post('/books/:id/edit', asyncHandler(async (req, res) => {
+router.post('/books/:id', asyncHandler(async (req, res) => {
   let book;
   try {
     book = await Book.findByPk(req.params.id);
     if (book) {
       await book.update(req.body);
-      console.log(req.body)
       res.redirect('/books/' + book.id)
     } else {
       res.sendStatus(404)
@@ -80,5 +79,15 @@ router.post('/books/:id/edit', asyncHandler(async (req, res) => {
     }
   }
 }))
+
+router.post('/books/:id/delete', asyncHandler(async (req ,res) => {
+  const book = await Book.findByPk(req.params.id);
+  await book.destroy();
+  if (book) {
+    res.redirect("/books");
+  } else {
+    res.sendStatus(404)
+  }
+}));
 
 module.exports = router;
