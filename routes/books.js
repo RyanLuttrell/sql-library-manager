@@ -1,3 +1,4 @@
+//Import the dependencies needed for this project
 const express = require('express');
 const db = require('../db')
 const router = express.Router();
@@ -83,6 +84,7 @@ router.post('/books/:id', asyncHandler(async (req, res) => {
   }
 }))
 
+//Sends the information to the database to delete the selected row
 router.post('/books/:id/delete', asyncHandler(async (req ,res) => {
   const book = await Book.findByPk(req.params.id);
   await book.destroy();
