@@ -22,4 +22,6 @@ block content
           td= book.author
           td= book.genre
           td= book.year
+    each page in pageNumber
+      a.pages(href='/books/page/' + page)= page
 

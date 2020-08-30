@@ -21,14 +21,26 @@ function asyncHandler(cb){
 
 //Redirect so that the user automatically goes to the full listing of books
 router.get("/", asyncHandler(async (req, res) => {
-    res.redirect("/books");
+    res.redirect("/books/page/1");
   })
 );
 
 //Get full list of books
-router.get("/books", asyncHandler(async (req, res) => {
-    const books = await Book.findAll();
-    res.render("index", {books: books, title: 'My Library Application'});
+router.get("/books/page/:page", asyncHandler(async (req, res) => {
+    let pageNumber = [];
+    const count = await Book.count();
+    const pageCount = Math.ceil(count/10);
+    const pageLimit = 10;
+    const currentOffset = (req.params.page - 1) * 10
+    for (let i = 1; i <= pageCount; i++) {
+      pageNumber.push(i)
+    }
+    const books = await Book.findAll({
+      limit: pageLimit,
+      offset: currentOffset
+    });
+    res.render("index", {books: books, title: 'My Library Application', pageNumber: pageNumber});
+
   })
 );
 
