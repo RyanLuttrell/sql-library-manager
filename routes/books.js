@@ -1,5 +1,6 @@
 //Import the dependencies needed for this project
 const express = require('express');
+const {Op} = require('sequelize');
 const db = require('../db')
 const router = express.Router();
 const {Book} = db.models;
@@ -36,6 +37,8 @@ router.get("/books/new", asyncHandler(async (req, res) => {
   res.render("new-book", {book: {}, title: "Create A New Book"})
 }));
 
+
+
 //Post the new book to the database
 router.post('/books/new', asyncHandler(async (req, res, next) => {
   let book;
@@ -51,6 +54,27 @@ router.post('/books/new', asyncHandler(async (req, res, next) => {
     }
   }
 }));
+
+//Search functionality for EXCEEDS EXPECTATIONS
+router.get('/books/search/:search', asyncHandler(async (req, res) => {
+  const books = await Book.findAll({
+    where: {
+      [Op.or]: [
+        {title: {
+          [Op.like]: '%' + req.params.search + '%'
+        }},
+        {author: {
+          [Op.like]: '%' + req.params.search + '%'
+        }},
+        {genre: {
+          [Op.like]: '%' + req.params.search + '%'
+        }},
+        {year: req.params.search}
+      ]
+    }
+  })
+  res.render('index', {books: books, title: 'Search Resutls for: Harry'})
+}))
 
 //Shows the form that has the details of the book as well as the ability to update the information in the database
 router.get('/books/:id', asyncHandler(async (req, res) => {
