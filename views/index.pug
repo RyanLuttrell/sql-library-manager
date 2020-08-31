@@ -3,7 +3,12 @@ extends layout
 block content
   h1=title
   p
+        a.button(href='/') Home
+  p
     a.button(href='/books/new') Create New Book
+  form(method='post' action='/books/search')
+    input#search(name='search' type='text' placeholder='Search')
+    input(type='submit' value='Search')
   table
     thead
       tr
@@ -19,6 +24,7 @@ block content
           td= book.author
           td= book.genre
           td= book.year
-    each page in pageNumber
-      a.pages(href='/books/page/' + page)= page
+    if pageNumber
+      each page in pageNumber
+        a.pages(href='/books/page/' + page)= page
 

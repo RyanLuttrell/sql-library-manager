@@ -40,9 +40,29 @@ router.get("/books/page/:page", asyncHandler(async (req, res) => {
       offset: currentOffset
     });
     res.render("index", {books: books, title: 'My Library Application', pageNumber: pageNumber});
-
   })
 );
+
+//Search functionality for EXCEEDS EXPECTATIONS
+router.post('/books/search', asyncHandler(async (req, res) => {
+  const books = await Book.findAll({
+    where: {
+      [Op.or]: [
+        {title: {
+          [Op.like]: '%' + req.body.search + '%'
+        }},
+        {author: {
+          [Op.like]: '%' + req.body.search + '%'
+        }},
+        {genre: {
+          [Op.like]: '%' + req.body.search + '%'
+        }},
+        {year: req.body.search}
+      ]
+    }
+  })
+  res.render('index', {books: books, title: 'Search Resutls for: ' + req.body.search, searchBook: req.body.search})
+}))
 
 //Render the form so that a user can add a new book to the library
 router.get("/books/new", asyncHandler(async (req, res) => {
@@ -66,27 +86,6 @@ router.post('/books/new', asyncHandler(async (req, res, next) => {
     }
   }
 }));
-
-//Search functionality for EXCEEDS EXPECTATIONS
-router.get('/books/search/:search', asyncHandler(async (req, res) => {
-  const books = await Book.findAll({
-    where: {
-      [Op.or]: [
-        {title: {
-          [Op.like]: '%' + req.params.search + '%'
-        }},
-        {author: {
-          [Op.like]: '%' + req.params.search + '%'
-        }},
-        {genre: {
-          [Op.like]: '%' + req.params.search + '%'
-        }},
-        {year: req.params.search}
-      ]
-    }
-  })
-  res.render('index', {books: books, title: 'Search Resutls for: Harry'})
-}))
 
 //Shows the form that has the details of the book as well as the ability to update the information in the database
 router.get('/books/:id', asyncHandler(async (req, res) => {
