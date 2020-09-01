@@ -21,8 +21,23 @@ function asyncHandler(cb){
 
 //Redirect so that the user automatically goes to the full listing of books
 router.get("/", asyncHandler(async (req, res) => {
-    res.redirect("/books/page/1");
+    res.redirect("/books");
   })
+);
+
+router.get('/books', asyncHandler(async (req, res) => {
+  let pageNumber = [];
+  const count = await Book.count();
+  const pageCount = Math.ceil(count/10);
+  for (let i = 1; i <= pageCount; i++) {
+    pageNumber.push(i)
+  }
+  const books = await Book.findAll({
+    limit: 10,
+    offset: 0
+  });
+  res.render("index", {books: books, title: 'My Library Application', pageNumber: pageNumber});
+})
 );
 
 //Get full list of books
